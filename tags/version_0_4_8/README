@@ -1,0 +1,101 @@
+Pinot, http://pinot.berlios.de/
+
+Pinot is a metasearch tool for the X-Window desktop. It acts as a front-end for
+search engines such as Google (with support for the SOAP API), All The Web,
+Ask Jeeves, etc.. and allows one to index relevant results locally and query
+the index.
+It was developed and tested on GNU/Linux and should work on other Unix-like systems.
+
+Dependencies :
+---------------
+
+Name			Location			Version used
+----			--------			------------
+
+SQLite							3.1.2
+http://www.sqlite.org/
+
+xapian-core						0.9.4
+http://www.xapian.org/
+
+curl (1)						7.13.1
+http://curl.haxx.se/
+- OR -
+neon (1)						0.24.7
+http://www.webdav.org/neon/
+
+Google SOAP API (2)	Search/Google/googleapi		beta2
+
+ GSOAP							2.7.6e
+ http://www.cs.fsu.edu/~engelen/soap.html
+
+gtkmm							2.6.2
+http://www.gtkmm.org/
+
+libxml++						2.12.0
+http://libxmlplusplus.sourceforge.net/
+
+libtextcat						2.2
+http://software.wise-guys.nl/libtextcat/
+
+gmime							2.1.9
+http://spruce.sourceforge.net/gmime
+
+Mozilla's gtk-mozembed (3)				1.4
+http://www.mozilla.org/
+
+boost (4)						1.32.0
+http://www.boost.org/
+
+shared-mime-info					0.17
+http://freedesktop.org/Software/shared-mime-info
+
+desktop-file-utils					0.10
+http://www.freedesktop.org/software/desktop-file-utils
+
+unzip							5.52
+http://www.info-zip.org/pub/infozip/UnZip.html
+
+pdftohtml						0.36
+http://pdftohtml.sourceforge.net/
+
+antiword						0.36.1
+http://www.winfield.demon.nl/
+
+unrtf							0.19.3
+http://www.gnu.org/software/unrtf/unrtf.html
+
+TagLib							1.4
+http://ktown.kde.org/~wheeler/taglib/
+
+glademm (5)						2.12.0 cvs
+http://home.wtal.de/petig/Gtk/index.html
+
+(1) enabled with "./configure --with-http=neon|curl"
+(2) enabled with "./configure --with-soap=yes"
+(3) select Mozilla or Firefox with "./configure --with-gecko=mozilla|firefox"
+(4) for building only
+(5) to optionally regenerate the GUI code
+
+FAQ :
+-----
+
+- When listing an index or indexing documents, Pinot complains of an
+  "index error"
+  This is likely because a previous instance didn't exit properly and one
+  (or more) index is still locked. Quit Pinot and look for a "db_lock" file
+  in "~/.pinot/index" and "~/.pinot/mail". If it's there, delete it and
+  restart Pinot. This will be fixed in the future.
+
+- When compiling from source, you may run into linking problems related to
+  libstdc++.la. Try patching xapian-config as explained in this post
+  (http://lists.tartarus.org/pipermail/xapian-devel/2006-January/000293.html).
+
+- If you experience segfaults at startup and you are on Fedora, chances are
+  it's because of libxml++/libsigc++. See this Bugzilla entry:
+  https://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=178592
+  The latest version seems to fix this issue.
+
+- If you have built Pinot from source, make sure you have done a "make install".
+  Pinot will fail to start if it can't find stuff it needs, its icon for instance.
+

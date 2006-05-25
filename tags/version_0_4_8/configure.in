@@ -1,0 +1,211 @@
+# generated 2005/12/14 20:48:47 SGT by fabrice@amra.dyndns.org.(none)
+# using glademm V2.6.0
+
+AC_PREREQ(2.50)
+AC_INIT(pinot, 0.48,[fabricecolin@users.berlios.de])
+AM_INIT_AUTOMAKE
+AC_CONFIG_HEADERS(config.h)
+
+AC_ISC_POSIX
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+AC_PROG_CPP
+AC_PROG_CXX
+AC_PROG_CXXCPP
+AM_PROG_LIBTOOL
+
+dnl *************************************************
+dnl gettext support
+dnl *************************************************
+
+GETTEXT_PACKAGE=pinot
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",
+		[the gettext domain])
+
+dnl Add the languages which your application supports here.
+ALL_LINGUAS="fr es"
+#AM_GNU_GETTEXT([external]) 
+AM_GLIB_GNU_GETTEXT
+
+dnl Set PACKAGE_LOCALE_DIR in config.h.
+if test "x${prefix}" = "xNONE"; then
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale",
+		[Define to the location of locale files.])
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale",
+		[Define to the location of locale files.])
+fi
+dnl And set PREFIX in config.h.
+if test "x${prefix}" = "xNONE"; then
+  AC_DEFINE_UNQUOTED(PREFIX, "${ac_default_prefix}",
+		[Define to the package prefix.])
+else
+  AC_DEFINE_UNQUOTED(PREFIX, "${prefix}",
+		[Define to the package prefix.])
+fi
+
+AC_LANG_CPLUSPLUS
+
+AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
+AC_PATH_PROG(DESKTOP_INSTALL, desktop-file-install, no)
+
+dnl SOAP API support
+AC_MSG_CHECKING(whether to enable SOAP support)
+AC_ARG_WITH(soap, AS_HELP_STRING(--with-soap@<:@=yes|no@:>@,
+   whether to enable SOAP support (default: no)))
+soapsupport=$with_soap
+if test "x$soapsupport" = "x"; then
+   soapsupport="no"
+fi
+AC_MSG_RESULT($soapsupport)
+
+case "$soapsupport" in
+yes)
+PKG_CHECK_MODULES(SOAP, gsoap)
+SOAP_CFLAGS="-DHAS_GOOGLEAPI $SOAP_CFLAGS"
+SOAP_LIBS="$SOAP_LIBS -lSearchSOAP"
+SOAP_SUBDIRS="Search/Google"
+SEARCH_LTLIBRARIES="libSearch.la libSearchSOAP.la"
+SEARCH_LIBS="-lSearch -lSearchGoogle"
+;;
+no)
+SOAP_CFLAGS=""
+SOAP_LIBS=""
+SOAP_SUBDIRS=""
+SEARCH_LTLIBRARIES="libSearch.la"
+SEARCH_LIBS="-lSearch"
+;;
+esac
+AC_SUBST(SOAP_CFLAGS)
+AC_SUBST(SOAP_LIBS)
+AC_SUBST(SOAP_SUBDIRS)
+AC_SUBST(SEARCH_LTLIBRARIES)
+AC_SUBST(SEARCH_LIBS)
+
+dnl Mozilla
+AC_MSG_CHECKING([which Gecko engine to use])
+AC_ARG_WITH(gecko, AS_HELP_STRING(--with-gecko@<:@=mozilla|firefox@:>@,
+   which Gecko engine to use (default: mozilla)))
+gecko=$with_gecko
+if test "x$gecko" = "x"; then
+   gecko="mozilla"
+fi
+AC_MSG_RESULT([$gecko])
+
+PKG_CHECK_MODULES(GECKO, $gecko-xpcom >= 1.4 $gecko-gtkmozembed >= 1.4 )
+dnl Mozilla NSS and NSPR
+AC_PATH_PROG(NSS_CONFIG, nss-config, no)
+if test "$NSS_CONFIG" = "no" ; then
+   PKG_CHECK_MODULES(MOZILLANS, $gecko-nss >= 1.4 $gecko-nspr >= 1.4)
+   MOZILLA_NS_DIR="HAS_MOZILLA_NSS"
+else
+   PKG_CHECK_MODULES(MOZILLANS, nss >= 1.4 nspr >= 1.4)
+   MOZILLA_NS_DIR="HAS_NSS"
+fi
+dnl Location of Mozilla's library directory
+MOZILLA_LIB_DIR="`$PKG_CONFIG --variable=libdir $gecko-gtkmozembed`"
+if test "$MOZILLA_LIB_DIR" = "" ; then
+  MOZILLA_LIB_DIR=/usr/lib/mozilla
+fi
+
+dnl Neon or Curl ?
+AC_MSG_CHECKING(which HTTP library to use)
+AC_ARG_WITH(http, AS_HELP_STRING(--with-http@<:@=neon|curl@:>@,
+   which HTTP library to use (default: curl)))
+httplibrary=$with_http
+if test "x$httplibrary" = "x"; then
+   httplibrary="curl"
+fi
+AC_MSG_RESULT($httplibrary)
+
+case "$httplibrary" in
+neon)
+PKG_CHECK_MODULES(NEON, neon >= 0.24 )
+PKG_CHECK_MODULES(SSL, openssl >= 0.9.7 )
+HTTP_LIBRARY="USE_NEON"
+HTTP_DOWNLOADER="NeonDownloader"
+;;
+curl)
+AC_PATH_PROG(CURL_CONFIG, curl-config, no)
+if test "$CURL_CONFIG" = "no" ; then
+   AC_MSG_ERROR([Can't find curl-config in $PATH.])
+   exit 1
+fi
+CURL_CFLAGS=`$CURL_CONFIG --cflags`
+CURL_LIBS=`$CURL_CONFIG --libs`
+HTTP_LIBRARY="USE_CURL"
+HTTP_DOWNLOADER="CurlDownloader"
+;;
+esac
+AC_SUBST(HTTP_DOWNLOADER)
+
+dnl Xapian
+AC_PATH_PROG(XAPIAN_CONFIG, xapian-config, no)
+if test "$XAPIAN_CONFIG" = "no" ; then
+   AC_MSG_ERROR([Can't find xapian-config in $PATH.])
+   exit 1
+fi
+XAPIAN_CFLAGS=`$XAPIAN_CONFIG --cxxflags`
+XAPIAN_LIBS=`$XAPIAN_CONFIG --libs`
+
+dnl inotify
+haslinuxinotifyh="no"
+AM_CONDITIONAL(HAVE_LINUX_INOTIFY, false)
+AC_CHECK_HEADERS([linux/inotify.h],
+   [haslinuxinotifyh="yes"
+    AC_DEFINE(HAVE_LINUX_INOTIFY, [],
+		[Define if linux/inotify.h exists.])
+    AM_CONDITIONAL(HAVE_LINUX_INOTIFY, true)
+   ])
+if test "$haslinuxinotifyh" = "no" ; then
+   AC_CHECK_HEADERS(sys/inotify.h)
+fi
+
+dnl Other libraries
+MISC_LIBS="-lcrypt"
+AC_SUBST(MISC_LIBS)
+AC_CHECK_HEADERS(textcat.h)
+PKG_CHECK_MODULES(MIMEINFO, shared-mime-info )
+PKG_CHECK_MODULES(TAGLIB, taglib >= 1.4 )
+AC_SUBST(TAGLIB_CFLAGS)
+AC_SUBST(TAGLIB_LIBS)
+PKG_CHECK_MODULES(SQL, sqlite3 >= 3.1 )
+AC_SUBST(SQL_CFLAGS)
+AC_SUBST(SQL_LIBS)
+HTTP_CFLAGS="$NEON_CFLAGS $SSL_CFLAGS $CURL_CFLAGS -D$HTTP_LIBRARY"
+HTTP_LIBS="$NEON_LIBS $SSL_LIBS $CURL_LIBS"
+AC_SUBST(HTTP_CFLAGS)
+AC_SUBST(HTTP_LIBS)
+PKG_CHECK_MODULES(MIME, gmime-2.0 >= 2.0 )
+AC_SUBST(MIME_CFLAGS)
+AC_SUBST(MIME_LIBS)
+PKG_CHECK_MODULES(XML, libxml++-2.6 >= 2.12 )
+AC_SUBST(XML_CFLAGS)
+AC_SUBST(XML_LIBS)
+INDEX_CFLAGS="$XAPIAN_CFLAGS"
+INDEX_LIBS="$XAPIAN_LIBS -ltextcat"
+AC_SUBST(INDEX_CFLAGS)
+AC_SUBST(INDEX_LIBS)
+PKG_CHECK_MODULES(SIGCPP, sigc++-2.0 >= 2.0 )
+AC_SUBST(SIGCPP_CFLAGS)
+AC_SUBST(SIGCPP_LIBS)
+PKG_CHECK_MODULES(UI, gtkmm-2.4 >= 2.6 )
+UI_CFLAGS="$MOZILLANS_CFLAGS -D$MOZILLA_NS_DIR $GECKO_CFLAGS $UI_CFLAGS"
+UI_LIBS="-lpthread -L$MOZILLA_LIB_DIR -Xlinker -rpath -Xlinker $MOZILLA_LIB_DIR $GECKO_LIBS $MOZILLANS_LIBS $UI_LIBS"
+AC_SUBST(UI_CFLAGS)
+AC_SUBST(UI_LIBS)
+
+dnl Check for specific functions
+AC_CHECK_FUNCS(gettimeofday)
+AC_CHECK_FUNCS(lstat)
+AC_CHECK_FUNCS(mmap)
+
+AC_OUTPUT( pinot.spec Makefile Utils/Makefile Tokenize/Makefile )
+AC_OUTPUT( SQL/Makefile po/Makefile.in Collect/Makefile )
+if test "$SOAP_SUBDIRS" != "" ; then
+  AC_OUTPUT( Search/Google/Makefile )
+fi
+AC_OUTPUT( Search/Makefile Index/Makefile Monitor/Makefile UI/RenderHTML/Makefile UI/GTK2/src/Makefile )
+
