@@ -1,0 +1,196 @@
+2006/07/05 version_0_5_0
+Tokenize :
+ - switched to pdftotext, which seems to support more files than pdftohtml
+SQL :
+ - remove history items older than one month at startup
+Search :
+ - can search for documents with language "Unknown" (ie those for which
+  language detection failed)
+UI :
+ - multiple user-configurable cache services. They are defined in
+  $PREFIX/share/pinot/globalconfig.xml and listed under the View Cache menu.
+ - allow to change the language of several documents at once
+ - after editing a query, don't change selection in the queries list
+ - More Like This extracts representative terms from the selected documents
+  (if they are indexed) and creates a "More Like ..." query
+ - set the indexed status icon when results are indexed
+ - view results on double clicks
+ - show a message if there is no application defined for a file's type
+ - most tree columns can be sorted at last ! :-)
+ - work-around for bizarre bug that causes a segfault when creating a query
+  that indexes and labels results based on a language filter
+
+2006/06/11 version_0_4_9
+General :
+ - able to find the default application for a given MIME type
+Tokenize :
+ - better HTML tokenizer
+UI :
+ - titles in documents lists are no longer truncated
+ - if import fails, the progress bar displays the error message
+ - dropped the internal viewer, default applications are launched on View
+ - View Cache no longer dependant on Google SOAP API. It just points to the
+  Google Cache for http[s] results
+ - remember whether the queries list is expanded
+
+2006/05/25 version_0_4_8
+Monitor :
+ - replaced FAM/Gamin with inotify
+Search :
+ - fixed BitTorrent source
+UI :
+ - fixed menuitems inconsitencies
+ - always use user-provided language on update !
+ - all query terms are highlighted in the extract !
+ - threads that finish while the import dialog is up are processed when the
+  dialog box is closed
+
+2006/05/12 version_0_4_7
+General :
+ - all programs have man pages and support --help and --version
+Search :
+ - the Google API engine is no longer unnecessarily picky about queries parameters
+ - updated Creative Commons plugin, based on the one shipped with Firefox
+UI :
+ - merged channel Web Services with The Web
+ - the state of engine channels is saved and restored
+ - query terms are highlighted in the extract field
+ - allow editing the language of documents. A subsequent update would use the
+  given language to stem terms.
+
+2006/04/22 version_0_4_6
+Search :
+ - resurrected support for the Google API, enabled with "./configure --with-soap=yes".
+  This requires the gsoap development toolkit.
+ - tweaked extraction of results' extract and URL
+ - renamed pinot_search to pinot-search
+ - (temporarily hopefully) removed MozDex plugin 
+Index :
+ - changed URL hash algorithm for compatibility with omindex. Reindexing documents
+  with URLs > 128 characters is necessary
+Tokenize :
+ - new tokenizer for MP3, Vorbis and FLAC files that depend on the TagLib library
+ - new XML tokenizer
+ - new tokenizer for OpenDocument/StarOffice files (unzip required)
+ - use xdgmime to query shared-mime-info for better MIME type detection
+HTML browser :
+ - can build against Mozilla or Firefox, set with "./configure --with-gecko=mozilla|firefox"
+UI :
+ - discovered and fixed pretty stupid bug that would cause a crash when indexing
+  search results while the My Documents tab isn't opened
+ - internationalized desktop file
+
+2006/03/25 version_0_4_5
+Build :
+ - various fixes for building on Fedora Core 5
+Index :
+ - listing a label's documents displays the correct documents count in the status bar
+  and navigation buttons are enabled or disabled accordingly
+Search :
+ - identified and fixed cause of crash when searching several engines simultaneously
+ - Teoma and Ask Jeeves plugins replaced by Ask.com plugin
+ - dropped Altavista and Lycos
+ - added RollYO's Top News, Exalead and Creative Commons sources
+ - fixed results extraction with Topix
+ - better URL extraction for those search engines that use redirectors, for
+  instance http://rds.yahoo.com/_ylt=.../**http%3a//some.website.com/here/index.html
+ - tweaked abstract generation
+UI :
+ - when no email boxes were being monitored, Pinot could crash at exit time
+  depending on which version of FAM was used
+ - suggestion of query terms can be disabled
+ - new results are now shown with a background colour of the user's choice
+ - since index searches are multi-stepped, live queries' terms are now ANDed together
+
+2006/03/12 version_0_4_4
+Build :
+ - fixed building of PDF, RTF and MS Word tokenizer libraries
+ - HTTP library can be selected with "./configure --with-http=curl|neon"
+Collect :
+ - added curl-based downloader, used by default instead of Neon
+Index :
+ - dropped dependency on OTS, abstracts are now generated at search time
+Search :
+ - fixed page browsing with Lycos plugin
+UI :
+ - fixed potential deadlock, eg between saving preferences and listing the index
+ - labels no longer have colours; selecting a label on an index only lists
+  those documents that have the label
+
+2006/02/25 version_0_4_3
+Build :
+ - dropped patch for libxml++ v0.26 support
+ - use autotools
+Search :
+ - include pinot_search to query search engines from the command-line
+ - better parsing of Sherlock plugins with foreign tags
+ - URLs of results returned by Sherlock engines were incorrectly lower-cased
+ - fix for Topix and Acoona
+Index :
+ - changed term prefixes to conform to conventions used by Omega and other
+  Xapian-based tools. Unfortunately, users will have to update documents and
+  reapply labels !
+UI :
+ - UTF-8 fixes on stored queries dates, results extracts and locale catalogs;
+   the Spanish and French catalogs are usable now !
+ - Better error handling in worker threads and at startup
+
+2006/01/31 version_0_4_2
+Search :
+ - support for OpenSearch Description, Query and Response
+ - replaced Koders and Omega Sherlock plugins with their OpenSearch equivalent
+ - added MozDex
+Index :
+ - queries on an index that cannot be locked no longer loop
+UI :
+ - when no email boxes were being monitored, Pinot wouldn't exit right away
+ - results extract field can be resized
+ - Spanish translation by Jesús Tramullas (jesus at tramullas dot com)
+
+2006/01/20 version_0_4_0
+UI and SQLite :
+ - dropped ActionHistory
+Search :
+ - fixed issues with documents and queries language
+ - detect encoding of results pages
+ - fixed AskJeeves source
+Index :
+ - fixed issues with documents language
+ - limit amount of text parsed by summarization and language guessing
+ - limit terms length
+ - canonicalize URLs
+ - make sure index is always unlocked properly
+Tokenize :
+ - modified tokenizer plugins interface
+ - new RTF tokenizer (requires unrtf)
+UI :
+ - standard About box
+ - better documents importing
+ - better charset conversion
+ - completion on query field, based on terms in the documents index
+ - all notebook tabs are open on a need-to basis and can be closed
+ - fixed several UI inconsistencies
+ - catch signals and signal threads to ensure clean exits
+ - save language names in English, load in current locale
+ - requires gtkmm v2.6
+
+2005/12/18 version_0_3_5
+Xapian + SQLite back-end :
+ - dropped unnecessary tables, moved labels and properties into the index
+Neon downloader :
+ - fail on HTTP errors
+ - setup OpenSSL callbacks for multi-threading support
+Search :
+ - can filter documents by label
+ - multi-step index search : exact matches first, then with stemming, then with ignoring the operators
+HTML browser :
+ - initialize NSS and NSPR to get rid of crash when visiting https sites
+UI :
+ - on double clicks in the index tab, check a document is selected before opening the properties box
+ - copy & paste should now work as expected
+ - modified index browser
+Threads :
+ - handle select() errors
+
+2005/12/08 version_0_3_0
+ - first public release
