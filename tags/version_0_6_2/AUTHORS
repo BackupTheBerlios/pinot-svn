@@ -1,0 +1,24 @@
+Pinot is written by :
+
+	Fabrice Colin <fabricecolin at users dot berlios dot de>
+
+Patches, bug reports and helpful comments :
+
+	Building with CygWin - Reini Urban <rurban at x-ray dot at>
+	SuSE-friendly spec file - Marcus Rueckert <darix at web dot de>
+	Simplified UI - Manuel Breitfeld <manu_foren at gmx dot net>
+	Missing copyright notice - Gauvain Pocentek <gauvainpocentek at gmail dot com>
+
+The file Monitor/linux-inotify-syscalls.h is originally from libinotify
+(Copyright © 2005 Ryan Lortie <desrt at desrt dot ca>).
+
+Some code is borrowed from Xapian Omega, which is "largely the work of
+Olly Betts, Mark Shinwell (omindex-config) and Richard Boulton".
+
+Code for mktime_from_utc() in Utils/TimeConverter.cpp was borrowed from
+wget (http://wget.sunsite.dk/).
+
+Translations provided by :
+
+	Spanish - Jesús Tramullas <jesus at tramullas dot com>
+
