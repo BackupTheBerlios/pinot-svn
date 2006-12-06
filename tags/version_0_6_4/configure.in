@@ -1,0 +1,223 @@
+# generated 2005/12/14 20:48:47 SGT by fabrice@amra.dyndns.org.(none)
+# using glademm V2.6.0
+
+AC_PREREQ(2.50)
+AC_INIT(pinot, 0.64,[fabricecolin@users.berlios.de])
+AM_INIT_AUTOMAKE
+AC_CONFIG_HEADERS(config.h)
+
+AC_ISC_POSIX
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+AC_PROG_CPP
+AC_PROG_CXX
+AC_PROG_CXXCPP
+AM_PROG_LIBTOOL
+
+dnl *************************************************
+dnl gettext support
+dnl *************************************************
+
+GETTEXT_PACKAGE=pinot
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",
+		[the gettext domain])
+
+dnl Add the languages which your application supports here.
+ALL_LINGUAS="fr es nl sv"
+#AM_GNU_GETTEXT([external]) 
+AM_GLIB_GNU_GETTEXT
+
+dnl Set PACKAGE_LOCALE_DIR in config.h.
+if test "x${prefix}" = "xNONE"; then
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${ac_default_prefix}/${DATADIRNAME}/locale",
+		[Define to the location of locale files.])
+else
+  AC_DEFINE_UNQUOTED(PACKAGE_LOCALE_DIR, "${prefix}/${DATADIRNAME}/locale",
+		[Define to the location of locale files.])
+fi
+dnl And set PREFIX in config.h.
+if test "x${prefix}" = "xNONE"; then
+  AC_DEFINE_UNQUOTED(PREFIX, "${ac_default_prefix}",
+		[Define to the package prefix.])
+else
+  AC_DEFINE_UNQUOTED(PREFIX, "${prefix}",
+		[Define to the package prefix.])
+fi
+
+AS_AC_EXPAND(DATADIR, $datadir)
+AS_AC_EXPAND(BINDIR, $bindir)
+AS_AC_EXPAND(SYSCONFDIR, $sysconfdir)
+
+dnl Set DBUS_SERVICES_DIR in de.berlios.Pinot.service.
+DBUS_SERVICES_DIR="$DATADIR/dbus-1/services"
+AC_SUBST(BINDIR)
+AC_SUBST(DBUS_SERVICES_DIR)
+AC_DEFINE_UNQUOTED(DBUS_SERVICES_DIR, "$DBUS_SERVICES_DIR",
+		[Define to the DBUS services directory.])
+
+AC_LANG_CPLUSPLUS
+
+AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
+AC_PATH_PROG(DESKTOP_INSTALL, desktop-file-install, no)
+
+dnl SOAP API support
+AC_MSG_CHECKING(whether to enable SOAP support)
+AC_ARG_WITH(soap, AS_HELP_STRING(--with-soap@<:@=yes|no@:>@,
+   whether to enable SOAP support (default: no)))
+soapsupport=$with_soap
+if test "x$soapsupport" = "x"; then
+   soapsupport="no"
+fi
+AC_MSG_RESULT($soapsupport)
+
+case "$soapsupport" in
+yes)
+PKG_CHECK_MODULES(SOAP, gsoap)
+SOAP_CFLAGS="-DHAVE_GOOGLEAPI $SOAP_CFLAGS"
+SOAP_LIBS="$SOAP_LIBS -lSearchSOAP"
+SOAP_SUBDIRS="Search/Google"
+SEARCH_LTLIBRARIES="libSearch.la libSearchSOAP.la"
+SEARCH_LIBS="-lSearch -lSearchGoogle"
+;;
+no)
+SOAP_CFLAGS=""
+SOAP_LIBS=""
+SOAP_SUBDIRS=""
+SEARCH_LTLIBRARIES="libSearch.la"
+SEARCH_LIBS="-lSearch"
+;;
+esac
+AC_SUBST(SOAP_CFLAGS)
+AC_SUBST(SOAP_LIBS)
+AC_SUBST(SOAP_SUBDIRS)
+AC_SUBST(SEARCH_LTLIBRARIES)
+AC_SUBST(SEARCH_LIBS)
+
+dnl Neon or Curl ?
+AC_MSG_CHECKING(which HTTP library to use)
+AC_ARG_WITH(http, AS_HELP_STRING(--with-http@<:@=neon|curl@:>@,
+   which HTTP library to use (default: curl)))
+httplibrary=$with_http
+if test "x$httplibrary" = "x"; then
+   httplibrary="curl"
+fi
+AC_MSG_RESULT($httplibrary)
+
+case "$httplibrary" in
+neon)
+PKG_CHECK_MODULES(NEON, neon >= 0.24 )
+PKG_CHECK_MODULES(SSL, openssl >= 0.9.7 )
+HTTP_LIBRARY="USE_NEON"
+HTTP_DOWNLOADER="NeonDownloader"
+;;
+curl)
+AC_PATH_PROG(CURL_CONFIG, curl-config, no)
+if test "$CURL_CONFIG" = "no" ; then
+   AC_MSG_ERROR([Can't find curl-config in $PATH.])
+   exit 1
+fi
+CURL_CFLAGS=`$CURL_CONFIG --cflags`
+CURL_LIBS=`$CURL_CONFIG --libs`
+HTTP_LIBRARY="USE_CURL"
+HTTP_DOWNLOADER="CurlDownloader"
+;;
+esac
+AC_SUBST(HTTP_DOWNLOADER)
+
+dnl Xapian
+AC_PATH_PROG(XAPIAN_CONFIG, xapian-config, no)
+if test "$XAPIAN_CONFIG" = "no" ; then
+   AC_MSG_ERROR([Can't find xapian-config in $PATH.])
+   exit 1
+fi
+XAPIAN_CFLAGS=`$XAPIAN_CONFIG --cxxflags`
+XAPIAN_LIBS=`$XAPIAN_CONFIG --libs`
+
+dnl inotify
+linuxinotify="no"
+AM_CONDITIONAL(HAVE_LINUX_INOTIFY, false)
+AC_CHECK_HEADERS([linux/inotify.h],
+   [linuxinotify="yes"
+   AM_CONDITIONAL(HAVE_LINUX_INOTIFY, true)
+   ])
+if test "$linuxinotify" = "no" ; then
+   AC_CHECK_HEADERS([sys/inotify.h],
+   [linuxinotify="yes"
+   AM_CONDITIONAL(HAVE_LINUX_INOTIFY, true)
+   ])
+fi
+
+dnl boost Spirit 
+AM_CONDITIONAL(HAVE_BOOST_SPIRIT, false)
+AC_CHECK_HEADERS([boost/spirit/core.hpp],
+    [AM_CONDITIONAL(HAVE_BOOST_SPIRIT, true)
+    ])
+
+dnl TextCat
+AC_CHECK_HEADERS([textcat.h])
+AC_CHECK_LIB(textcat, textcat_Cat,
+    [AM_CONDITIONAL(HAVE_TEXTCAT_CAT, true)],
+    [AM_CONDITIONAL(HAVE_TEXTCAT_CAT, false)]
+    )
+
+dnl Other libraries
+MISC_LIBS="-lcrypt"
+AC_SUBST(MISC_LIBS)
+AC_CHECK_HEADERS([netinet/in.h arpa/inet.h])
+PKG_CHECK_MODULES(MIMEINFO, shared-mime-info )
+SHARED_MIME_INFO_PREFIX=`pkg-config --variable=prefix shared-mime-info`
+AC_SUBST(SHARED_MIME_INFO_PREFIX)
+AC_DEFINE_UNQUOTED(SHARED_MIME_INFO_PREFIX,"$SHARED_MIME_INFO_PREFIX",
+    [the shared-mime-info prefix])
+PKG_CHECK_MODULES(TAGLIB, taglib >= 1.4 )
+AC_SUBST(TAGLIB_CFLAGS)
+AC_SUBST(TAGLIB_LIBS)
+PKG_CHECK_MODULES(SQL, sqlite3 >= 3.1 )
+AC_SUBST(SQL_CFLAGS)
+AC_SUBST(SQL_LIBS)
+HTTP_CFLAGS="$NEON_CFLAGS $SSL_CFLAGS $CURL_CFLAGS -D$HTTP_LIBRARY"
+HTTP_LIBS="$NEON_LIBS $SSL_LIBS $CURL_LIBS"
+AC_SUBST(HTTP_CFLAGS)
+AC_SUBST(HTTP_LIBS)
+PKG_CHECK_MODULES(MIME, gmime-2.0 >= 2.0 )
+AC_SUBST(MIME_CFLAGS)
+AC_SUBST(MIME_LIBS)
+PKG_CHECK_MODULES(XML, libxml++-2.6 >= 2.12 )
+AC_SUBST(XML_CFLAGS)
+AC_SUBST(XML_LIBS)
+INDEX_CFLAGS="$XAPIAN_CFLAGS"
+INDEX_LIBS="$XAPIAN_LIBS -ltextcat"
+AC_SUBST(INDEX_CFLAGS)
+AC_SUBST(INDEX_LIBS)
+PKG_CHECK_MODULES(DBUS, dbus-glib-1)
+AC_SUBST(DBUS_CFLAGS)
+AC_SUBST(DBUS_LIBS)
+DBUS_GLIB_VERSION=`pkg-config --modversion dbus-glib-1`
+AC_SUBST(DBUS_GLIB_VERSION)
+PKG_CHECK_MODULES(SIGCPP, sigc++-2.0 >= 2.0 )
+AC_SUBST(SIGCPP_CFLAGS)
+AC_SUBST(SIGCPP_LIBS)
+PKG_CHECK_MODULES(GLIBMM, glibmm-2.4 >= 2.6 )
+AC_SUBST(GLIBMM_CFLAGS)
+AC_SUBST(GLIBMM_LIBS)
+PKG_CHECK_MODULES(UI, gtkmm-2.4 >= 2.6 )
+UI_LIBS="-lpthread $UI_LIBS"
+AC_SUBST(UI_CFLAGS)
+AC_SUBST(UI_LIBS)
+
+dnl Check for specific functions
+AC_CHECK_FUNCS(gettimeofday)
+AC_CHECK_FUNCS(timegm)
+AC_CHECK_FUNCS(lstat)
+AC_CHECK_FUNCS(mmap)
+
+AC_OUTPUT( pinot.spec UI/GTK2/src/de.berlios.Pinot.service Makefile \
+	Utils/Makefile Tokenize/Makefile SQL/Makefile po/Makefile.in \
+	Collect/Makefile )
+if test "$SOAP_SUBDIRS" != "" ; then
+AC_OUTPUT( Search/Google/Makefile )
+fi
+AC_OUTPUT( Search/Makefile Index/Makefile Monitor/Makefile UI/GTK2/src/Makefile )
+
