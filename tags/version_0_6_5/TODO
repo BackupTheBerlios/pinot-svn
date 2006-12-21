@@ -1,0 +1,100 @@
+General
+- Fix the FIXMEs
+- Get rid of dead code/classes/methods...
+- Advertise service via Rendezvous
+- MIMEScanner should also return parent types so that we don't filter out types unnecessarily
+- Load desktop files from /usr/share/applications/kde ?
+- DBUS_API_SUBJECT_TO_CHANGE only needed for DBus < 1.0
+
+Tokenize
+- Allow to cache documents that had to be converted ? eg PDF, MS Word
+- PDF tokenizer with poppler
+- WordPerfect tokenizer with libwpd
+- Office tokenizer with libgst
+- Check whether pdftotext flattens text in PDF documents that have columns
+- HtmlTokenizer should skip htdig_noindex blocks (http://www.htdig.org/attrs.html#noindex_start)
+- HtmlTokenizer to look for META tags Author, Creator, Publisher and CreationDate
+
+Monitor
+- Implement support for Solaris FEM
+
+Collect
+- Comply with robot stuff defined at http://www.robotstxt.org/
+- Harvest mode grabs all pages on a specific site down to a certain depth
+- Make User-Agent string configurable
+- Make download timeout configurable
+- Support for HTML frames
+- Curl and Neon must support a proxy, so allow to configure that
+
+Search
+- With engines that provide a redirection URL for results (eg Acoona), it looks like
+  the query hitory is not saved/checked correctly
+- Add http://www.patentcommons.org/commons/patentsearch.php
+- Replace Accona with Baidu ?
+- Implement AutoDiscovery of OpenSearch Description files (http://opensearch.a9.com/spec/1.1/description/)
+- Make sure Description files' SyndicationRight is not private or closed
+- Support for Google Buttons
+- Export search results as OpenSearch Response or CSV
+- Nested queries
+
+Index
+- Get hold of stopwords lists for the languages supported by Xapian's stemmers and don't index stop words
+- Allow to import and use omindex-produced indexes  so that they can be used like pinot's internal indexes
+- Xapian lock files can be deleted at startup if no other instance is running
+- Play around with the XAPIAN_FLUSH_THRESHOLD env var
+- Hash document data to determine on updates whether documents have changed
+- Xapian Query objects will become serializable at some point, this will be useful
+  for stored queries
+- Think about indexing archives (parent documents) and their contents (child documents)
+- Reopen connection to remote indexes when necessary; does Xapian throw a RemoteError ?
+- Allow to access remote Xapian indexes tunneled through ssh, using Xapian::Remote::open()
+  defined in /usr/include/xapian/dbfactory.h (xapian-progsrv backend)
+- All indexes can be browsed with the new global posting list found in Xapian > 0.9.9, ie
+  Xapian::Database::postlist_begin("")
+- Index xattrs if any
+
+Mail
+- Find out what kind of locking scheme Mozilla uses (POSIX lock ?) and use that
+- Index Evolution email (Camel, might be useful for other types actually)
+- Append sender to title or use as host name ?
+- Decypher and use Mozilla's mailbox scheme, eg
+  mailbox://mbox_file_name?number=2164959&part=1.2&type=text/plain&filename=portability.txt
+- When parsing email's Date field, take the timezone offset into account, eg in
+    Date: Thu, 25 Aug 2005 11:04:49 +0800
+  +0800 is basically same as SGT. At the moment the date is assumed to be GMT !
+- Keep track of attachments and avoid indexing the same file twice
+- Most mboxes are now correctly recognized as application/mbox so index their messages
+
+Daemon
+- Allow building without inotify/the DBus daemon
+- Clean up method names
+- Prefer ustring to string whenever possible
+- Make unique (http://guniqueapp.akl.lt/)
+- Queue unindexing too
+- Export Web searching over D-Bus
+- Labels should be managed by the daemon, and not saved to the configuration file
+- Make sure labels are alpha-numeric characters exclusively
+- DBus SetDocument[s]Labels should create labels if necessary
+- Reintroduce Index method in D-Bus interface
+- Allow notifications when new locations need crawling !
+
+UI
+- When sorting results by host name, give better score to results that appear several times
+- Show which threads are running, what they are doing, and allow to stop them selectively
+- Add an history window to edit Index and ViewHistory
+- Automatic indexing of a query's results depending on type, source, size, language
+- Non modal status window to display log of operations
+- Display search engines icons (Gtk::IconSource::set_filename() and Gtk::Style::render_icon())
+- Replace Combobox objects with ComboboxText's (glademm support required)
+- Replace glademm with libglademm ?
+- Filter documents by language, similarly to how labels are shown
+- Replace labels with tags (Leaftag, http://www.chipx86.com/wiki/Leaftag). Enable to import
+  all the documents that match a specific tag
+- Either Live Query behaves like a live query (eg results list updated when new documents match)
+  or it is renamed to something else to avoid confusion
+- Labels should be set by a separate thread
+- When viewing a result, all rows for that same URL should be updated with the Viewed icon
+- Prompt users for a command-line if the type of the document to open has no application,
+  with default to xdg-open if it's available
+
+
