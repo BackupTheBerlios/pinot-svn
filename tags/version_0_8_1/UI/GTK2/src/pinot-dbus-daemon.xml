@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<node>
+  <interface name="org.freedesktop.DBus.Introspectable">
+    <method name="Introspect">
+      <arg type="s" name="data" direction="out"/>
+    </method>
+  </interface>
+  <!--
+	This interface WILL change before 1.0 is released !
+	-->
+  <interface name="de.berlios.Pinot">
+    <!--
+	Retrieves statistics.
+	 crawledCount: the number of documents crawled
+	 docsCount: the number of documents in the index
+	-->
+    <method name="GetStatistics">
+      <annotation name="de.berlios.Pinot.GetStatistics" value="pinotDBus"/>
+      <arg type="u" name="crawledCount" direction="out"/>
+      <arg type="u" name="docsCount" direction="out"/>
+    </method>
+    <!--
+	Instructs the daemon program to reload the configuration file.
+	 loadStatus: TRUE if the configuration is being reloaded
+	-->
+    <method name="Reload">
+      <annotation name="de.berlios.Pinot.Reload" value="pinotDBus"/>
+      <arg type="b" name="reloading" direction="out" />
+    </method>
+    <!--
+	Stops the daemon program.
+	 exitStatus: the daemon's exit status.
+	-->
+    <method name="Stop">
+      <annotation name="de.berlios.Pinot.Stop" value="pinotDBus"/>
+      <arg type="i" name="exitStatus" direction="out" />
+    </method>
+    <!--
+	Gets the list of known labels.
+	 labels: array of labels
+	-->
+    <method name="GetLabels">
+      <annotation name="de.berlios.Pinot.GetLabels" value="pinotDBus"/>
+      <arg type="as" name="labels" direction="out"/>
+    </method>
+    <!--
+	Adds a label.
+	 label: the name of the new label
+        This method shouldn't be used by applications other than Pinot.
+	-->
+    <method name="AddLabel">
+      <annotation name="de.berlios.Pinot.AddLabel" value="pinotDBus"/>
+      <arg type="s" name="label" direction="in"/>
+      <arg type="s" name="label" direction="out"/>
+    </method>
+    <!--
+	Renames a label.
+	 oldLabel: the label to rename
+	 newLabel: the new label name
+        This method shouldn't be used by applications other than Pinot.
+	-->
+    <method name="RenameLabel">
+      <annotation name="de.berlios.Pinot.RenameLabel" value="pinotDBus"/>
+      <arg type="s" name="oldLabel" direction="in"/>
+      <arg type="s" name="newLabel" direction="in"/>
+      <arg type="s" name="newLabel" direction="out"/>
+    </method>
+    <!--
+	Deletes a label.
+	 label: the name of the label to delete
+        This method shouldn't be used by applications other than Pinot.
+	-->
+    <method name="DeleteLabel">
+      <annotation name="de.berlios.Pinot.DeleteLabel" value="pinotDBus"/>
+      <arg type="s" name="label" direction="in"/>
+      <arg type="s" name="label" direction="out"/>
+    </method>
+    <!--
+	Retrieves a document's labels.
+	 docId: the document's ID
+	 labels: array of labels applied to the document
+	-->
+    <method name="GetDocumentLabels">
+      <annotation name="de.berlios.Pinot.GetDocumentLabels" value="pinotDBus"/>
+      <arg type="u" name="docId" direction="in"/>
+      <arg type="as" name="labels" direction="out"/>
+    </method>
+    <!--
+	Sets a document's labels.
+	 docId: the document's ID
+	 labels: array of labels to apply to the document
+	 resetLabels: TRUE if existing labels should be unset
+	-->
+    <method name="SetDocumentLabels">
+      <annotation name="de.berlios.Pinot.SetDocumentLabels" value="pinotDBus"/>
+      <arg type="u" name="docId" direction="in"/>
+      <arg type="as" name="labels" direction="in"/>
+      <arg type="b" name="resetLabels" direction="in"/>
+      <arg type="u" name="docId" direction="out"/>
+    </method>
+    <!--
+	Sets labels on a group of documents.
+	 docIds: array of document IDs
+	 labels: array of labels to apply to the documents
+	 resetLabels: TRUE if existing labels should be unset
+	-->
+    <method name="SetDocumentsLabels">
+      <annotation name="de.berlios.Pinot.SetDocumentsLabels" value="pinotDBus"/>
+      <arg type="as" name="docIds" direction="in"/>
+      <arg type="as" name="labels" direction="in"/>
+      <arg type="b" name="resetLabels" direction="in"/>
+      <arg type="b" name="status" direction="out"/>
+    </method>
+    <!--
+	Retrieves information about a document.
+	 docId: the document's ID
+	 fields : array of (s name, s value) structures with name one of
+	 "caption", "url", "type", "language", "modtime", "size"
+	-->
+    <method name="GetDocumentInfo">
+      <annotation name="de.berlios.Pinot.GetDocumentInfo" value="pinotDBus"/>
+      <arg type="u" name="docId" direction="in"/>
+      <arg type="a(ss)" name="fields" direction="out"/>
+    </method>
+    <!--
+	Sets information about a document.
+	 docId: the document's ID
+	 fields : array of (s name, s value) structures with name one of
+	 "caption", "url", "type", "language", "modtime", "size"
+	-->
+    <method name="SetDocumentInfo">
+      <annotation name="de.berlios.Pinot.SetDocumentInfo" value="pinotDBus"/>
+      <arg type="u" name="docId" direction="in"/>
+      <arg type="a(ss)" name="fields" direction="in"/>
+      <arg type="u" name="docId" direction="out"/>
+    </method>
+    <!--
+	Queries the index.
+	 searchText : search text, as would be entered in Pinot's live query field
+	 maxHits: the maximum number of hits desired
+	 docIds: array of document IDs
+	 docIdsCount: the number of document IDs in the array
+	-->
+    <method name="SimpleQuery">
+      <annotation name="de.berlios.Pinot.SimpleQuery" value="pinotDBus"/>
+      <arg type="s" name="searchText" direction="in" />
+      <arg type="u" name="maxHits" direction="in" />
+      <arg type="as" name="docIds" direction="out" />
+    </method>
+    <!--
+	Updates a document.
+	 docId: the document's ID
+	-->
+    <method name="UpdateDocument">
+      <annotation name="de.berlios.Pinot.UpdateDocument" value="pinotDBus"/>
+      <arg type="u" name="docId" direction="in"/>
+      <arg type="u" name="docId" direction="out"/>
+    </method>
+  </interface>
+</node>
