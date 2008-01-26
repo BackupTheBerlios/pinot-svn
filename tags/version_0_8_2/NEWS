@@ -1,0 +1,607 @@
+2008/01/26 version_0_8_2
+Build :
+ - don't link to unnecessary libraries
+Search :
+ - removed the WiseNut plugin
+ - fixed the Sherlock plugin parser's handling of input items, thanks to
+  Claudio Bustos Navarrete
+ - support for Xesam RC1
+ - don't build the Xesam UL parser if Spirit is not available, thanks to
+  Reuben Thomas
+Xapian :
+ - back-end moved into a dynamic library
+ - fixed several issues with query stemming
+ - generate terms for the MIME class
+Daemon :
+ - log an error when there's no inotify watch left
+ - export HasDocument over D-Bus
+UI :
+ - when the index needs updating, tell the user on every run until he clicks
+  the "Don't warn me again" checkbox
+ - stemming is now configured separately and not driven by the "lang" filter
+ - don't correct spelling of auto-generated and previously corrected queries
+ - defer importing to the main window
+ - Status window shows which engines are available
+ - larger default blacklist
+ - viewed documents are added to the list of recently used files. Requires
+  gtkmm >= 2.10
+ - updated Dutch translation by JW
+ - updated Spanish translation by Jesus Tramullas
+ - updated Swedish translation by Zirro
+
+2007/11/24 version_0_8_1
+Build :
+ - misc fixes
+General :
+ - updated FAQ and README
+ - fixed Icon field in desktop files
+Index :
+ - workaround for broken shared-mime-info rules that identify HTML files as
+  Mozilla bookmarks
+ - files whose name includes a question mark were not indexed correctly
+ - pinot-label would loop forever if the supplied file name wasn't in the index
+ - don't build the spelling table if the env var PINOT_SPELLING_DB is set to NO
+Deskbar :
+ - new plugin compatible with Deskbar 2.20
+Daemon :
+ - stop crawling and indexing if the partition on which the index resides is
+  getting full. By default, that means less than 50 Mb. This can be overriden
+  with the env var PINOT_MINIMUM_DISK_SPACE, eg PINOT_MINIMUM_DISK_SPACE=100
+  for 100 Mb
+ - stop crawling when the system goes on battery and restart when on AC. This
+  requires support for the freedesktop.org's Power Management spec, or pre-spec
+  gnome-power-manager.
+UI :
+ - fixed build against libsigc++ 2.1
+ - updated Portuguese translation by Tiago Silva
+ - updated Swedish translation by Daniel Nylander
+
+2007/11/01 version_0_8_0
+Build :
+ - SMP builds, thanks to Gabriel C
+Index :
+ - unknown document types can be indexed if one of their parent types is known
+ - new pinot-label tool to get, set and list labels on indexed files from the
+  command-line
+ - limit external programs to 5 minutes of CPU time
+Search :
+ - support for date (year, month, day), time (hours, minutes, seconds) and
+  size (in bytes) ranges
+ - attempt to correct the spelling of index queries that don't match anything
+ - log how long queries take
+ - keep connection to remote databases alive
+ - better query expansion
+ - the Yahoo! plugin was replaced with the Yahoo! API plugin
+ - pass queries to Web engines unmodified, without attempting to filter results
+  based on a filter or a range used in the query
+Daemon :
+ - fixed Reload method
+ - new D-Bus methods to manage labels
+ - new --reindex option
+UI :
+ - Search This For menu to search in results
+ - suggest spelling corrections for index queries that don't match anything
+ - all indices can be browsed
+ - inline URL completion in the import dialog box, based on previous results
+ - better support for user-specific MIME settings, thanks to Lee Marks
+ - reload MIME settings when they are edited
+ - results of stored queries can be sorted by relevance (default) or by date
+ - new History button to show previous results for a stored query
+ - documents' properties are updated in the background
+ - documents' terms can be saved to a file
+ - Status window shows description of errors
+ - send a Reload to the daemon only when the relevant preferences are modified
+ - updated Dutch translation by JW
+ - updated Brazilian Portuguese translation by Leonardo Melo
+
+2007/08/23 version_0_7_6
+Build :
+ - also look for textcat.h in libtextcat
+Monitor :
+ - a deletion would deadlock the monitor and prevent from processing any
+  further event
+ - unindex directories' contents when deleted and update when moved
+Collect :
+ - try to open files with NO_ATIME if possible
+ - Neon-based downloader had not been brought up to date
+Index :
+ - replaced na(t)ive tokenizer with Xapian's TermGenerator. No effort is
+  made to convert text to UTF-8 yet, so this depends on document formats
+  and encodings
+ - preliminary support for spelling corrections, without user feedback
+ - index directories are tagged as cache directories that they are skipped
+  by "tar --exclude-caches"
+ - preserve documents' title if possible, use user-specified title on import
+Search :
+ - fixed Sherlock parser for boost 1.34
+ - support for gSOAP 2.7.9e
+ - when searching an index, don't resort to OR'ing all terms if the original
+  query doesn't match anything, this only confused users
+Deskbar :
+ - removed unnecessary shebang in script
+Daemon :
+ - new D-Bus method Reload, that enables to reload the configuration and act
+  upon it whenever modified by the UI
+ - SimpleQuery still resorts to OR'ing all terms if the original query doesn't
+  match anything
+UI :
+ - fixed some minor cosmetic bugs, tweaked a few things
+ - user-specific MIME settings in ~/.local have priority over system settings
+ - queries with at least a start date can be run, and filter a documents list
+ - the label specified on import was ignored
+ - new traditional Chinese translation by Yung-Chung Lin
+ - updated Portuguese translation by _PN_boy
+ - updated Swedish translation by Daniel Nylander
+
+2007/07/28 version_0_7_5
+General :
+ - install Dijon's ChangeLog
+Index :
+ - files with nested documents (eg mbox) could sometimes not be fully indexed
+  and/or and the wrong MIME type was reported
+Search :
+ - updated Xesam Query Language parser to reflect current spec
+ - updated Sherlock plugin for Exalead, removed Ask
+Daemon :
+ - mbox files are no longer configured separately : those found during
+  a crawl are indexed and monitored automatically
+ - patterns list can be used as a blacklist (default) or whitelist
+UI :
+ - fixed a bug where filtering a documents list with an empty query would
+  prevent from viewing the list without or without a filter query
+ - avoid a crash when viewing the properties of several documents one after
+  the other
+ - updated Dutch translation by Balaam's Miracle
+ - updated Portuguese translation by _PN_boy
+
+2007/06/24 version_0_7_4
+General :
+ - make uninstall actually uninstalls all files
+Index :
+ - can detect Hungarian, Romanian and Turkish with libtextcat 2.2 and stem
+  with Xapian 1.0
+ - adopted Xapian 1.0's new indexing strategy
+Search :
+ - basic support for the Xesam Query and User Language in pinot-search
+Daemon :
+ - history database is separate from the UI's
+UI :
+ - in index list tabs, replaced labels filtering with stored queries filtering,
+  so that one can find out which and how many documents in the index being
+  shown match a query (the query's maximum number of results is ignored)
+ - Hungarian, Romanian and Turkish are valid document languages
+
+2007/05/23 version_0_7_3
+Tokenize :
+ - mbox filter was broken in previous release
+ - TagLib filter returns the file's name as title if no tag is found
+SQL :
+ - don't force opening and closing the database on every request
+Index :
+ - overwrite index on upgrades, it's faster than deleting all its documents
+ - support for Xapian 1.0 API
+Search :
+ - stemming wasn't activated when a language is set
+ - support for Xapian 1.0 API
+Daemon :
+ - don't scan for deleted files on every run
+UI :
+ - fixed crash when unindexing documents
+ - updated Dutch translation by JW 
+ - updated Italian translation by Marco Bazzani
+
+2007/04/28 version_0_7_2
+General :
+ - synced with gtk+'s xdgmime
+Index :
+ - add extra term to documents so that filter "dir:/" can be applied
+Search :
+ - results lists can be saved as CSV or OpenSearch response XML/RSS
+Daemon :
+ - indexes created with version < 0.72 will be automatically upgraded
+ - fixed problem where too much time spent upgrading would cause the daemon
+  to be killed
+UI :
+ - open documents on HTTP/HTTPS with the default Web browser
+ - updated German translation by Christian Dywan
+ - updated Italian translation by Vincenzo Consales
+
+2007/03/31 version_0_7_1
+Tokenize :
+ - HTML filter wasn't always properly initialized, which could cause a crash
+Monitor :
+ - file creation wasn't acted upon
+ - moves to unmonitored locations are treated as deletions
+Collect :
+ - fixed building with a version of curl that doesn't depend on OpenSSL
+ - dropped pinot-collect tool
+Index :
+ - added versioning
+ - label names, file names, directory names and URLs are escaped
+ - directories are indexed as separate documents
+Search :
+ - filters with spaces or control characters should be double-quoted, eg :
+  file:"Cats & Dogs.txt"
+Daemon :
+ - extended D-Bus methods Set and GetDocumentInfo
+ - fixed off-by-one error in numbering of mail messages parts
+ - blacklist wasn't applied to files for which the monitor reports events
+ - an index created with Pinot < 0.71 is automatically upgraded
+Deskbar :
+ - use deskbar.Utils.url_show() if available
+UI :
+ - Status window is now live
+ - View on a plain text message shows the mail headers
+ - added proxy support for Web engines queries and collection of documents on HTTP
+ - better work-around for desktop files that attempt setting env variables in Exec
+ - use Gtk::ComboboxText where appropriate
+ - German translation by Christian Dywan
+ - Italian translation by Michele Angrisano
+ - Portuguese translation by _PN_boy
+
+2007/03/06 version_0_7_0
+Tokenize :
+ - now use Dijon's filters (http://dijon.berlios.de/)
+Index :
+ - support for remote indexes served by xapian-progsrv+ssh
+ - index to use by pinot-index specified with --db
+Search :
+ - date range filtering applies to index searches
+ - limit the number of results returned by pinot-search with --max
+Daemon :
+ - log the daemon's PID
+ - sped up unindexing of documents after a directory is deleted
+ - caught up with changes in D-Bus 1.0
+UI :
+ - stored queries can do date range filtering. If dates don't make sense
+  (eg From >= To), they are ignored
+ - under the Session menu, Status shows various bits of information about
+  the indexes and the daemon's crawler
+ - prompt for command to use to open documents of a type for which no
+  application is defined
+ - revamped configuration dialog for external indexes
+ - Index > Properties now shows a document's size and number of unique terms
+ - most operations that involve peeking at the index are done in the background
+ - work-around for desktop files that attempt setting env variables in Exec
+ - caught up with changes in D-Bus 1.0
+ - Brazilian Portuguese translation by Leonardo Melo
+ - Russian translation by Sergey Vostrikov
+
+2006/12/21 version_0_6_5
+Build :
+ - added option --enable-debug to configure, --enable-soap replaces --with-soap
+ - complain bitterly if libtextcat header is not found
+ - Pthreads may be provided by a library other than libpthread
+ - install configuration files in sysconfdir, libraries in libdir
+Tokenize :
+ - optimized Ogg/MP3 filter
+Index :
+ - fixed extraction of language and size from document data
+ - store date terms for future date range filtering
+ - fixed argument checking in pinot-index
+Daemon :
+ - new DBus method SetDocumentsLabels to relabel several documents at once
+ - process DBus messages in a separate thread, not in the main thread
+UI :
+ - fixed expansion of .desktop's Exec
+ - initialize D-Bus ! Not sure why this didn't cause problems before.
+ - fixes for when the locale is not UTF-8
+ - on first run, open the Preferences box and show the Indexing tab
+ - for stored queries set to index and label results, only apply the new label
+  to results that already are in one of the indexes, don't do a full update
+ - refresh labelled documents list correctly after properties are changed
+
+2006/12/05 version_0_6_4
+Collect :
+ - don't needlessly load files that are going to be handled by an helper application
+Index :
+ - store documents size and file extension, if any
+ - fixed concurrency bug that could thrash the index on SMP systems
+ - very long capitalized terms could lead to document loss
+ - file names were always lower-cased
+Search :
+ - regenerated the Google SOAP API stubs with gsoap 2.7.8c
+UI :
+ - added filter on file extension
+ - fixed crash on SMP systems when listing an index
+ - fixed deadlock when indexing a query's results. Oddly enough, it seems it
+  happened only on FreeBSD !
+ - Dutch translation by Tikkel
+ - Swedish translation by Daniel Nylander
+Daemon :
+ - set a lower scheduling priority
+ - queue events in the database, not in memory
+ - clean exit when signalled/stopped while crawling
+
+2006/11/18 version_0_6_3
+Collect :
+ - watch out for NULL characters in data
+Tokenize :
+ - fixed memory leak. Temporary documents were not deleted most of the time
+UI :
+ - prettified results list
+ - better abstract highlighting
+ - fixed clipboard copy of results list and abstract
+Daemon :
+ - autostart the daemon process
+ - with dbus < 0.70, close the connection
+
+2006/11/04 version_0_6_2
+General :
+ - query shared-mime-info prefix, so that the applications database can be
+  loaded even when Pinot is installed under a different prefix
+ - copyright notice was missing in source
+Index :
+ - detect and support libtextcat 3.0 peculiarities
+ - can skip files based on glob pattern
+Search :
+ - fixed issue where label and directory filters were not applied correctly
+  when the filter doesn't start with an upper-case letter. Directory filters
+  starting with a non-alphanumeric character only work with Xapian >= 0.9.8.
+ - fixed A9, Accoona and Exalead plugins
+UI :
+ - file patterns to skip can be set in Preferences, Indexing
+ - columns showing a timestamp were sorted alphabetically
+ - refresh index lists correctly when exiting Preferences
+Daemon :
+ - fixed major bug where the daemon would loop endlessly reindexing mp3/ogg
+  files. When notified that a writable file was closed, check the file was
+  actually modified before reindexing it.
+ - fixed D-Bus warning about closing the connection when exiting
+
+2006/10/18 version_0_6_1
+General :
+ - switched to gtk+'s version of xdgmime
+Index :
+ - can now run queries like "type:text/html and lang:en and (tcp near ip)".
+  See README for more information about the syntax and a list of filters.
+Search :
+ - don't reject MozSearch plugins
+ - added plugin for Google code search service
+ - filters 'site' and 'file' (host name, file name) apply to Web engines
+ - fixed abstract generation
+UI :
+ - revamped the stored queries editor to allow any number of terms and filters
+ - preferences relative to My Documents and My Web Pages gathered under the
+  same tab
+ - hide the stored queries and engines lists by default to avoid scaring
+  people used to Beagle too much ;-)
+ - mail accounts configuration wasn't always saved correctly
+ - updating a document from the My Web Pages index messed the abstract
+Daemon :
+ - index attachements in mbox files
+ - documents deleted since last crawl were not removed from the index if the
+  corresponding location wasn't monitored
+
+2006/09/25 version_0_6_0
+Build :
+ - modifications for building on Cygwin, contributed by Reini Urban
+Monitor :
+ - inotify monitor more flexible
+SQL :
+ - retry if the database is busy
+ - save the daemon's crawler history
+Index :
+ - able to open remote indexes that were not initially available
+ - indexes are open in write mode only when necessary
+ - prefer Xapian's Flint back-end to Quartz
+ - terms starting with an upper-case letter are not ignored by terms suggestion
+ - refresh terms generated from the previous title, location etc... when updating a document
+ - MIME type and directory hierarchy are stored as terms
+ - store documents last modification date in a way compatible with Xapian Omega
+Search :
+ - fixed abstract generation with remote indexes, and queries with OR'ed terms !
+ - brought MozDex plugin back
+UI :
+ - show results scores
+ - fixed language shown in the properties box when language is unknown
+  for one or more of the documents selected
+ - better at queuing document indexing
+ - My Email index is replaced with the index managed by the daemon
+ - search terms suggestion, More Like This and the index status icon on results
+  rely on both internal indexes
+ - only URLs can be imported now as the daemon takes care of local files
+Daemon :
+ - crawls and indexes user-defined locations on the filesystem, mbox files included
+ - recursively monitors these locations for changes and updates the index
+ - provides a DBus interface suitable for querying and document inspection
+ - no dependency on gtkmm
+Deskbar Applet :
+ - plugin for Deskbar Applet that searches documents indexed by the daemon
+
+2006/07/05 version_0_5_0
+Tokenize :
+ - switched to pdftotext, which seems to support more files than pdftohtml
+SQL :
+ - remove history items older than one month at startup
+Search :
+ - can search for documents with language "Unknown" (ie those for which
+  language detection failed)
+UI :
+ - multiple user-configurable cache services. They are defined in
+  $PREFIX/share/pinot/globalconfig.xml and listed under the View Cache menu.
+ - allow to change the language of several documents at once
+ - after editing a query, don't change selection in the queries list
+ - More Like This extracts representative terms from the selected documents
+  (if they are indexed) and creates a "More Like ..." query
+ - set the indexed status icon when results are indexed
+ - view results on double clicks
+ - show a message if there is no application defined for a file's type
+ - most tree columns can be sorted at last ! :-)
+ - work-around for bizarre bug that causes a segfault when creating a query
+  that indexes and labels results based on a language filter
+
+2006/06/11 version_0_4_9
+General :
+ - able to find the default application for a given MIME type
+Tokenize :
+ - better HTML tokenizer
+UI :
+ - titles in documents lists are no longer truncated
+ - if import fails, the progress bar displays the error message
+ - dropped the internal viewer, default applications are launched on View
+ - View Cache no longer dependant on Google SOAP API. It just points to the
+  Google Cache for http[s] results
+ - remember whether the queries list is expanded
+
+2006/05/25 version_0_4_8
+Monitor :
+ - replaced FAM/Gamin with inotify
+Search :
+ - fixed BitTorrent source
+UI :
+ - fixed menuitems inconsitencies
+ - always use user-provided language on update !
+ - all query terms are highlighted in the extract !
+ - threads that finish while the import dialog is up are processed when the
+  dialog box is closed
+
+2006/05/12 version_0_4_7
+General :
+ - all programs have man pages and support --help and --version
+Search :
+ - the Google API engine is no longer unnecessarily picky about queries parameters
+ - updated Creative Commons plugin, based on the one shipped with Firefox
+UI :
+ - merged channel Web Services with The Web
+ - the state of engine channels is saved and restored
+ - query terms are highlighted in the extract field
+ - allow editing the language of documents. A subsequent update would use the
+  given language to stem terms.
+
+2006/04/22 version_0_4_6
+Search :
+ - resurrected support for the Google API, enabled with "./configure --with-soap=yes".
+  This requires the gsoap development toolkit.
+ - tweaked extraction of results' extract and URL
+ - renamed pinot_search to pinot-search
+ - (temporarily hopefully) removed MozDex plugin 
+Index :
+ - changed URL hash algorithm for compatibility with omindex. Reindexing documents
+  with URLs > 128 characters is necessary
+Tokenize :
+ - new tokenizer for MP3, Vorbis and FLAC files that depend on the TagLib library
+ - new XML tokenizer
+ - new tokenizer for OpenDocument/StarOffice files (unzip required)
+ - use xdgmime to query shared-mime-info for better MIME type detection
+HTML browser :
+ - can build against Mozilla or Firefox, set with "./configure --with-gecko=mozilla|firefox"
+UI :
+ - discovered and fixed pretty stupid bug that would cause a crash when indexing
+  search results while the My Documents tab isn't opened
+ - internationalized desktop file
+
+2006/03/25 version_0_4_5
+Build :
+ - various fixes for building on Fedora Core 5
+Index :
+ - listing a label's documents displays the correct documents count in the status bar
+  and navigation buttons are enabled or disabled accordingly
+Search :
+ - identified and fixed cause of crash when searching several engines simultaneously
+ - Teoma and Ask Jeeves plugins replaced by Ask.com plugin
+ - dropped Altavista and Lycos
+ - added RollYO's Top News, Exalead and Creative Commons sources
+ - fixed results extraction with Topix
+ - better URL extraction for those search engines that use redirectors, for
+  instance http://rds.yahoo.com/_ylt=.../**http%3a//some.website.com/here/index.html
+ - tweaked abstract generation
+UI :
+ - when no email boxes were being monitored, Pinot could crash at exit time
+  depending on which version of FAM was used
+ - suggestion of query terms can be disabled
+ - new results are now shown with a background colour of the user's choice
+ - since index searches are multi-stepped, live queries' terms are now ANDed together
+
+2006/03/12 version_0_4_4
+Build :
+ - fixed building of PDF, RTF and MS Word tokenizer libraries
+ - HTTP library can be selected with "./configure --with-http=curl|neon"
+Collect :
+ - added curl-based downloader, used by default instead of Neon
+Index :
+ - dropped dependency on OTS, abstracts are now generated at search time
+Search :
+ - fixed page browsing with Lycos plugin
+UI :
+ - fixed potential deadlock, eg between saving preferences and listing the index
+ - labels no longer have colours; selecting a label on an index only lists
+  those documents that have the label
+
+2006/02/25 version_0_4_3
+Build :
+ - dropped patch for libxml++ v0.26 support
+ - use autotools
+Search :
+ - include pinot_search to query search engines from the command-line
+ - better parsing of Sherlock plugins with foreign tags
+ - URLs of results returned by Sherlock engines were incorrectly lower-cased
+ - fix for Topix and Acoona
+Index :
+ - changed term prefixes to conform to conventions used by Omega and other
+  Xapian-based tools. Unfortunately, users will have to update documents and
+  reapply labels !
+UI :
+ - UTF-8 fixes on stored queries dates, results extracts and locale catalogs;
+   the Spanish and French catalogs are usable now !
+ - Better error handling in worker threads and at startup
+
+2006/01/31 version_0_4_2
+Search :
+ - support for OpenSearch Description, Query and Response
+ - replaced Koders and Omega Sherlock plugins with their OpenSearch equivalent
+ - added MozDex
+Index :
+ - queries on an index that cannot be locked no longer loop
+UI :
+ - when no email boxes were being monitored, Pinot wouldn't exit right away
+ - results extract field can be resized
+ - Spanish translation by Jesús Tramullas (jesus at tramullas dot com)
+
+2006/01/20 version_0_4_0
+UI and SQLite :
+ - dropped ActionHistory
+Search :
+ - fixed issues with documents and queries language
+ - detect encoding of results pages
+ - fixed AskJeeves source
+Index :
+ - fixed issues with documents language
+ - limit amount of text parsed by summarization and language guessing
+ - limit terms length
+ - canonicalize URLs
+ - make sure index is always unlocked properly
+Tokenize :
+ - modified tokenizer plugins interface
+ - new RTF tokenizer (requires unrtf)
+UI :
+ - standard About box
+ - better documents importing
+ - better charset conversion
+ - completion on query field, based on terms in the documents index
+ - all notebook tabs are open on a need-to basis and can be closed
+ - fixed several UI inconsistencies
+ - catch signals and signal threads to ensure clean exits
+ - save language names in English, load in current locale
+ - requires gtkmm v2.6
+
+2005/12/18 version_0_3_5
+Xapian + SQLite back-end :
+ - dropped unnecessary tables, moved labels and properties into the index
+Neon downloader :
+ - fail on HTTP errors
+ - setup OpenSSL callbacks for multi-threading support
+Search :
+ - can filter documents by label
+ - multi-step index search : exact matches first, then with stemming, then with ignoring the operators
+HTML browser :
+ - initialize NSS and NSPR to get rid of crash when visiting https sites
+UI :
+ - on double clicks in the index tab, check a document is selected before opening the properties box
+ - copy & paste should now work as expected
+ - modified index browser
+Threads :
+ - handle select() errors
+
+2005/12/08 version_0_3_0
+ - first public release

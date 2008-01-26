@@ -1,0 +1,114 @@
+# @configure_input@
+%if 0%{?suse_version}
+# SuSE
+%define pftotext_pkg xpdf-tools
+%define dbus_pkg dbus-1-glib
+%if 0%{?suse_version} > 1010
+%define dbus_dev_pkg dbus-1-glib-devel
+%else
+%define dbus_dev_pkg dbus-1-devel
+%endif
+%else
+# Fedora and anything else
+%define pftotext_pkg poppler-utils
+%define dbus_pkg dbus-glib
+%define dbus_dev_pkg dbus-devel
+%endif
+
+Summary: Personal search and metasearch tool
+Name: @PACKAGE@
+Version: @VERSION@
+Release: 1%{?dist}
+License: GPL
+Group: Applications/Internet 
+Source: %{name}-%{version}.tar.gz
+URL: http://pinot.berlios.de/
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Requires: xapian-core-libs >= 1.0.3, libtextcat >= 2.2, sqlite >= 3.3.1, curl >= 7.13, gmime >= 2.1
+Requires: gtkmm24 >= 2.10, libxml++ >= 2.12, %{dbus_pkg} >= 0.60, shared-mime-info
+Requires: taglib >= 1.4, unzip, antiword, unrtf, %{pftotext_pkg}
+#Suggests: xapian-omega
+BuildRequires: xapian-core-devel >= 1.0.3, libtextcat-devel >= 2.2, sqlite-devel >= 3.3.1, curl-devel >= 7.13, gmime-devel >= 2.1, boost-devel >= 1.32
+BuildRequires: gtkmm24-devel >= 2.10, libxml++-devel >= 2.12, %{dbus_dev_pkg} >= 0.60, gettext-devel, desktop-file-utils
+BuildRequires: taglib-devel >= 1.4
+BuildRequires: gcc-c++
+%if 0%{?_with_soap:1}
+BuildRequires: gsoap >= 2.7.9e
+%endif
+# These used to be independant packages
+Obsoletes: pinot-audio-docs
+Obsoletes: pinot-omega
+
+%description
+Pinot is a D-Bus service that crawls, indexes your documents and monitors them
+for changes, as well as a GTK-based user interface that enables to query
+the index built by the service and your favourite Web engines, and display and
+analyze the results.
+
+%package deskbar
+Summary: Pinot plugin for DeskbarApplet
+Group: Applications/Internet
+Requires: %{name} = %{version}
+Requires: deskbar-applet
+
+%description deskbar
+The included plugin enables Deskbar to search documents indexed by Pinot.
+
+%prep
+%setup -q
+
+%build
+%configure %{?_with_soap:--enable-soap=yes} %{?_with_debug:--enable-debug=yes}
+make %{?_smp_mflags}
+
+%install
+[ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
+make install DESTDIR=$RPM_BUILD_ROOT
+%find_lang %{name}
+
+%post
+touch --no-create %{_datadir}/icons/hicolor
+if [ -x %{_bindir}/gtk-update-icon-cache ]; then
+%{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
+fi
+ 
+%postun
+touch --no-create %{_datadir}/icons/hicolor
+if [ -x %{_bindir}/gtk-update-icon-cache ]; then
+%{_bindir}/gtk-update-icon-cache --quiet %{_datadir}/icons/hicolor || :
+fi
+
+%clean
+[ -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != / ] && rm -rf $RPM_BUILD_ROOT
+
+%files -f %{name}.lang
+%defattr(-, root, root, -)
+%doc AUTHORS ChangeLog ChangeLog-dijon COPYING FAQ NEWS README TODO
+%config(noreplace) %{_sysconfdir}/pinot/
+%{_bindir}/pinot
+%{_bindir}/pinot-dbus-daemon
+%{_bindir}/pinot-index
+%{_bindir}/pinot-label
+%{_bindir}/pinot-search
+%{_libdir}/pinot/filters/libexternalfilter.so*
+%{_libdir}/pinot/filters/libmboxfilter.so*
+%{_libdir}/pinot/filters/libtaglibfilter.so*
+%{_libdir}/pinot/backends/libxapianbackend.so*
+%{_datadir}/dbus-1/services/de.berlios.Pinot.service
+%{_datadir}/pinot/
+%{_datadir}/icons/hicolor/48x48/apps/pinot.png
+%{_datadir}/icons/hicolor/32x32/apps/pinot.png
+%{_datadir}/icons/hicolor/24x24/apps/pinot.png
+%{_datadir}/icons/hicolor/22x22/apps/pinot.png
+%{_datadir}/icons/hicolor/16x16/apps/pinot.png
+%{_sysconfdir}/xdg/autostart/*.desktop
+%{_datadir}/applications/*.desktop
+%{_mandir}/man1/pinot*
+
+%files deskbar
+%defattr(-,root,root,-)
+%{_libdir}/deskbar-applet/handlers/pinot-*
+%{_libdir}/deskbar-applet/modules-2.20-compatible/pinot-*
+
+%changelog
+

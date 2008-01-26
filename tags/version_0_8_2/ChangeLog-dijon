@@ -1,0 +1,104 @@
+------------------------------------------------------------------------
+r77 | fabricecolin | 2008-01-14 22:35:44 +0800 (Mon, 14 Jan 2008) | 6 lines
+Changed paths:
+   M /trunk/xesam/XapianQueryBuilder.cc
+   M /trunk/xesam/XapianQueryBuilder.h
+   M /trunk/xesam/XesamQLParser.cc
+
+Implemented support for size (on field "file:size") and time ranges, Proximity
+with any number of values, negation, as well as for content (but not source)
+filtering, either with the Category selector or the Query element. The latter
+would require the proper classification of documents, and is therefore extremely
+basic.
+
+------------------------------------------------------------------------
+r76 | fabricecolin | 2008-01-14 22:22:42 +0800 (Mon, 14 Jan 2008) | 3 lines
+Changed paths:
+   M /trunk/xesam/XesamQueryBuilder.cc
+   M /trunk/xesam/XesamQueryBuilder.h
+   M /trunk/xesam/XesamULParser.cc
+
+Look only for HAVE_BOOST_SPIRIT to determine whether Spirit is available.
+Modified prototypes of on_query methods.
+
+------------------------------------------------------------------------
+r75 | fabricecolin | 2008-01-12 21:35:45 +0800 (Sat, 12 Jan 2008) | 2 lines
+Changed paths:
+   M /trunk/xesam/XesamQLParser.cc
+   M /trunk/xesam/XesamQueryBuilder.h
+
+The Type selector was apparently replaced with Category.
+
+------------------------------------------------------------------------
+r74 | fabricecolin | 2008-01-05 12:53:44 +0800 (Sat, 05 Jan 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/GMimeMboxFilter.cc
+
+This can also process text/x-mail ant text/x-news.
+
+------------------------------------------------------------------------
+r73 | xern | 2007-12-24 11:36:38 +0800 (Mon, 24 Dec 2007) | 1 line
+Changed paths:
+   A /trunk/cjkv
+   A /trunk/cjkv/cjkv-tokenizer.cc
+   A /trunk/cjkv/cjkv-tokenizer.hh
+   A /trunk/cjkv/makefile
+   A /trunk/cjkv/test.cc
+
+The first commit of cjkv tokenizer.
+------------------------------------------------------------------------
+r72 | fabricecolin | 2007-11-29 21:21:44 +0800 (Thu, 29 Nov 2007) | 2 lines
+Changed paths:
+   A /trunk/filters/external-filters.xml
+
+This file is needed too.
+
+------------------------------------------------------------------------
+r71 | fabricecolin | 2007-11-29 20:52:11 +0800 (Thu, 29 Nov 2007) | 2 lines
+Changed paths:
+   M /trunk/xesam/XapianQueryBuilder.cc
+
+Assume the caller set the appropriate ValueRangeProcessor's on the QueryParser.
+
+------------------------------------------------------------------------
+r70 | fabricecolin | 2007-11-29 20:44:37 +0800 (Thu, 29 Nov 2007) | 3 lines
+Changed paths:
+   A /trunk/filters
+   A /trunk/filters/ExternalFilter.cc
+   A /trunk/filters/ExternalFilter.h
+   A /trunk/filters/Filter.cc
+   A /trunk/filters/Filter.h
+   A /trunk/filters/FilterFactory.cc
+   A /trunk/filters/FilterFactory.h
+   A /trunk/filters/GMimeMboxFilter.cc
+   A /trunk/filters/GMimeMboxFilter.h
+   A /trunk/filters/HtmlFilter.cc
+   A /trunk/filters/HtmlFilter.h
+   A /trunk/filters/TagLibMusicFilter.cc
+   A /trunk/filters/TagLibMusicFilter.h
+   A /trunk/filters/TextFilter.cc
+   A /trunk/filters/TextFilter.h
+   A /trunk/filters/XmlFilter.cc
+   A /trunk/filters/XmlFilter.h
+   A /trunk/xesam
+   A /trunk/xesam/XapianQueryBuilder.cc
+   A /trunk/xesam/XapianQueryBuilder.h
+   A /trunk/xesam/XesamParser.h
+   A /trunk/xesam/XesamQLParser.cc
+   A /trunk/xesam/XesamQLParser.h
+   A /trunk/xesam/XesamQueryBuilder.cc
+   A /trunk/xesam/XesamQueryBuilder.h
+   A /trunk/xesam/XesamULParser.cc
+   A /trunk/xesam/XesamULParser.h
+
+Current code imported from branches/pinot. All this no longer depends on Pinot's
+code so there's no reason to keep it in a branch.
+
+------------------------------------------------------------------------
+r1 | fabricecolin | 2007-01-27 11:53:54 +0800 (Sat, 27 Jan 2007) | 2 lines
+Changed paths:
+   A /trunk
+
+Trunk.
+
+------------------------------------------------------------------------
