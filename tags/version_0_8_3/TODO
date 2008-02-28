@@ -1,0 +1,111 @@
+Documentation
+- List what files from libtextcat 2.2 go where ?
+- Say where libtextcat 3.0 can (and cannot ;-) be found
+- MIME type should be as returned by xdg-utils' 'xdg-mime query filetype ...'
+- Try listing names of dependency packages for most distros
+- How to trouble-shoot with delve, get to a file with filters and labels
+- Explain when indexing and updating are done, eg in the results list, Index on
+ a result already indexed doesn't update it
+
+General
+- Fix the FIXMEs
+- Get rid of dead code/classes/methods...
+- Advertise service via Rendezvous
+- Extend metadata beyond title,location,language,type,timestamp,size
+- Don't package gmo files, they are platform dependent
+- CLI programs to use tty highlighting if available
+
+Tokenize
+- Allow to cache documents that had to be converted ? eg PDF, MS Word
+- PDF filter with poppler
+- WordPerfect filter with libwpd
+- Office filter with libgst
+- TeX filter
+- Check whether pdftotext flattens text in PDF documents that have columns
+- HtmlFilter should skip htdig_noindex blocks (http://www.htdig.org/attrs.html#noindex_start)
+- HtmlFilter to look for META tags Author, Creator, Publisher and CreationDate
+- Filters should have a version number so that new versions force reindexing documents of the
+ given type
+- XmlFilter is slow-ish, rewrite file parsing with the TextReader interface
+- Filters should at least return errno when they fail
+
+SQL
+- Move history files into the index directories
+
+Monitor
+- Implement support for Solaris FEM
+
+Collect
+- Comply with robot stuff defined at http://www.robotstxt.org/
+- Harvest mode grabs all pages on a specific site down to a certain depth
+- Make User-Agent string configurable
+- Make download timeout configurable
+- Support for HTML frames
+- Test NeonDownloader
+
+Search
+- With engines that provide a redirection URL for results (eg Acoona), it looks like
+  the query hitory is not saved/checked correctly
+- Make sure Description files' SyndicationRight is not private or closed
+- Get hold of stopwords lists for the languages supported by Xapian's stemmers
+ and remove stopwords from queries as first step of search
+- getCloseTerms() should be a search engine method so that WebEngine can use plugins'
+ suggestions Url field (http://developer.mozilla.org/en/docs/Supporting_search_suggestions_in_search_plugins)
+- pinot-search should be able to run stored queries, as found in the configuration file
+
+Index
+- Play around with the XAPIAN_FLUSH_THRESHOLD env var
+- MD5 hash to determine on updates whether documents have changed, as done by omindex
+- Reopen connection to remote indexes when necessary; does Xapian throw a RemoteError ?
+- Allow to access remote Xapian indexes tunneled through ssh with xapian-progsrv,
+  and make sure ssh will ask passwords with /usr/libexec/openssh/ssh-askpass
+- Index xattrs if any
+- Index Nautilus metadata (http://linuxboxadmin.com/articles/nautilus.php)
+- Reverse terms so that left wildcards can be applied ?
+- XapianIndex could do with some common code refactoring
+- Automatically categorize documents based on MIME type and source into picture, video, etc...
+- After indexing or updating a document, a call to getDocumentInfo() shouldn't be necessary
+- Labels and the rest of DocumentInfo are handled separately, they shouldn't be
+- Indexes have no knowledge of indexId's
+- Classify files (images, videos, etc...)
+
+Mail
+- Find out what kind of locking scheme Mozilla uses (POSIX lock ?) and use that
+- Index Evolution email (Camel, might be useful for other types actually)
+- Index mail headers
+- Decypher and use Mozilla's mailbox scheme, eg
+  mailbox://mbox_file_name?number=2164959&part=1.2&type=text/plain&filename=portability.txt
+- Keep track of attachments and avoid indexing the same file twice
+
+Daemon
+- Allow building without the daemon
+- Enable to deactivate D-Bus interface
+- Clean up method names
+- Prefer ustring to string whenever possible
+- Queue unindexing too
+- Don't link against SOAP stuff, it's not needed here
+- Export term suggestion over D-Bus
+- Follow updates to Xesam specs
+- Preserve user set metadata on reindexing
+ 
+UI
+- Show which threads are running, what they are doing, and allow to stop them
+ selectively
+- Display search engines icons (Gtk::IconSource::set_filename() and Gtk::Style::render_icon())
+- Replace glademm with libglademm ?
+- Make unique (http://guniqueapp.akl.lt/)
+- Either Live Query behaves like a live query (eg results list updated when new
+ documents match) or it is renamed to something else to avoid confusion
+- When viewing or indexing a result, all rows for that same URL should be updated with
+ the Viewed or Indexed icons (the latter after IndexingThread returns)
+- Make use of GTKmm 2.10 StatusIcon
+- UI doesn't show documents indexed by the daemon the very first time it's run,
+ at least until it's restarted
+- Unknown exceptions in IndexingThread or elsewhere should be logged as errors
+- Delete all temporary files when exiting
+- Show which stored queries are fully, partially or not at all Web friendly
+- List viewed URLs
+- Let queries index only new results
+- Query expansion should be interactive
+- Default cache provider should be configurable
+
