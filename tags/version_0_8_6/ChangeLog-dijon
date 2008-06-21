@@ -1,0 +1,339 @@
+------------------------------------------------------------------------
+r105 | fabricecolin | 2008-06-21 11:55:16 +0800 (Sat, 21 Jun 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/ExifImageFilter.cc
+   M /trunk/filters/ExifImageFilter.h
+   M /trunk/filters/ExternalFilter.cc
+   M /trunk/filters/ExternalFilter.h
+   M /trunk/filters/Filter.cc
+   M /trunk/filters/Filter.h
+   M /trunk/filters/FilterFactory.cc
+   M /trunk/filters/FilterFactory.h
+   M /trunk/filters/GMimeMboxFilter.cc
+   M /trunk/filters/GMimeMboxFilter.h
+   M /trunk/filters/HtmlFilter.cc
+   M /trunk/filters/HtmlFilter.h
+   M /trunk/filters/TagLibMusicFilter.cc
+   M /trunk/filters/TagLibMusicFilter.h
+   M /trunk/filters/TextFilter.cc
+   M /trunk/filters/TextFilter.h
+   M /trunk/filters/XmlFilter.cc
+   M /trunk/filters/XmlFilter.h
+
+Filters are under the GPL.
+
+------------------------------------------------------------------------
+r104 | fabricecolin | 2008-06-18 20:30:54 +0800 (Wed, 18 Jun 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/ExifImageFilter.cc
+
+Don't call TimeConverter here.
+
+------------------------------------------------------------------------
+r103 | fabricecolin | 2008-06-09 23:31:54 +0800 (Mon, 09 Jun 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/GMimeMboxFilter.cc
+
+No need to reinvent the wheel when we can just use g_mime_message_get_subject().
+
+------------------------------------------------------------------------
+r102 | fabricecolin | 2008-05-28 22:29:18 +0800 (Wed, 28 May 2008) | 2 lines
+Changed paths:
+   M /trunk/cjkv/CJKVTokenizer.cc
+   M /trunk/cjkv/CJKVTokenizer.h
+   M /trunk/filters/HtmlFilter.cc
+
+Cosmetic changes.
+
+------------------------------------------------------------------------
+r101 | fabricecolin | 2008-05-23 21:42:32 +0800 (Fri, 23 May 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/HtmlFilter.cc
+
+Skip htdig_noindex blocks.
+
+------------------------------------------------------------------------
+r100 | fabricecolin | 2008-05-19 18:01:29 +0800 (Mon, 19 May 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/GMimeMboxFilter.cc
+
+Decode base64-encoded ISO-2022-JP subject lines.
+
+------------------------------------------------------------------------
+r99 | fabricecolin | 2008-05-11 17:16:45 +0800 (Sun, 11 May 2008) | 3 lines
+Changed paths:
+   M /trunk/filters/GMimeMboxFilter.cc
+   M /trunk/filters/GMimeMboxFilter.h
+
+Don't use charset filters but remember what the part's charset is and let the
+calling application handle conversion.
+
+------------------------------------------------------------------------
+r98 | fabricecolin | 2008-05-06 22:53:36 +0800 (Tue, 06 May 2008) | 5 lines
+Changed paths:
+   M /trunk/filters/Filter.cc
+   M /trunk/filters/Filter.h
+   M /trunk/filters/HtmlFilter.cc
+   M /trunk/filters/HtmlFilter.h
+
+Filters may need to convert text to UTF-8 before/while processing documents.
+For instance, libxml2 used by the HTML filter doesn't handle gb2312 (at least
+when built without iconv support ?) and yet produces UTF-8 output.
+Fixed confusion about what charset should be set to in the metadata map.
+
+------------------------------------------------------------------------
+r97 | fabricecolin | 2008-05-03 14:00:01 +0800 (Sat, 03 May 2008) | 2 lines
+Changed paths:
+   M /trunk/cjkv/CJKVTokenizer.cc
+
+When a switch from non-CJKV to CJKV is detected, don't consume the first byte.
+
+------------------------------------------------------------------------
+r96 | fabricecolin | 2008-04-29 20:27:41 +0800 (Tue, 29 Apr 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/ExifImageFilter.cc
+
+Grab all tags.
+
+------------------------------------------------------------------------
+r95 | fabricecolin | 2008-04-26 14:51:35 +0800 (Sat, 26 Apr 2008) | 2 lines
+Changed paths:
+   M /trunk/cjkv/CJKVTokenizer.cc
+   M /trunk/cjkv/CJKVTokenizer.h
+
+Allow to break ASCII tokens only on space.
+
+------------------------------------------------------------------------
+r94 | fabricecolin | 2008-04-26 13:05:55 +0800 (Sat, 26 Apr 2008) | 2 lines
+Changed paths:
+   A /trunk/filters/ExifImageFilter.cc
+   A /trunk/filters/ExifImageFilter.h
+
+Experimental EXIF filter.
+
+------------------------------------------------------------------------
+r93 | fabricecolin | 2008-04-20 18:24:11 +0800 (Sun, 20 Apr 2008) | 3 lines
+Changed paths:
+   M /trunk/filters/GMimeMboxFilter.cc
+
+If a part has a charset specified, and it's not UTF-8, install a filter to
+convert to UTF-8.
+
+------------------------------------------------------------------------
+r92 | fabricecolin | 2008-04-11 23:47:33 +0800 (Fri, 11 Apr 2008) | 3 lines
+Changed paths:
+   M /trunk/filters/TagLibMusicFilter.cc
+   M /trunk/filters/TagLibMusicFilter.h
+
+TagLibMusicFilter only supports the input type DOCUMENT_FILE_NAME, contrary to
+what it advertised.
+
+------------------------------------------------------------------------
+r90 | fabricecolin | 2008-03-24 13:11:29 +0800 (Mon, 24 Mar 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/ExternalFilter.cc
+   M /trunk/filters/HtmlFilter.cc
+
+Minor modifications.
+
+------------------------------------------------------------------------
+r89 | fabricecolin | 2008-03-10 19:06:19 +0800 (Mon, 10 Mar 2008) | 2 lines
+Changed paths:
+   M /trunk/cjkv/CJKVTokenizer.cc
+
+Includes fix for gcc 4.3 by Adel Gadllah.
+
+------------------------------------------------------------------------
+r88 | fabricecolin | 2008-03-09 01:38:56 +0800 (Sun, 09 Mar 2008) | 3 lines
+Changed paths:
+   M /trunk/cjkv/CJKVTokenizer.cc
+   M /trunk/cjkv/CJKVTokenizer.h
+
+Merging in upstream changes, ie new segment() mthod and and an overload of
+tokenize() that works with a TokensHandler object.
+
+------------------------------------------------------------------------
+r86 | fabricecolin | 2008-02-27 23:17:16 +0800 (Wed, 27 Feb 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/ExternalFilter.cc
+   M /trunk/filters/HtmlFilter.cc
+
+Added missing includes for gcc 4.3. Patch by Adel Gadllah.
+
+------------------------------------------------------------------------
+r85 | fabricecolin | 2008-02-26 21:18:39 +0800 (Tue, 26 Feb 2008) | 2 lines
+Changed paths:
+   M /trunk/cjkv/CJKVTokenizer.cc
+
+Break non-CJKV tokens on all spaces and punctuations.
+
+------------------------------------------------------------------------
+r84 | fabricecolin | 2008-02-24 19:09:01 +0800 (Sun, 24 Feb 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/HtmlFilter.cc
+   M /trunk/filters/HtmlFilter.h
+
+Do without hashing.
+
+------------------------------------------------------------------------
+r83 | fabricecolin | 2008-02-24 19:07:55 +0800 (Sun, 24 Feb 2008) | 2 lines
+Changed paths:
+   M /trunk/cjkv/CJKVTokenizer.cc
+   M /trunk/cjkv/test.cc
+
+Don't fail on spaces in has_cjkv_only().
+
+------------------------------------------------------------------------
+r82 | fabricecolin | 2008-02-22 22:12:23 +0800 (Fri, 22 Feb 2008) | 2 lines
+Changed paths:
+   M /trunk/cjkv/CJKVTokenizer.cc
+
+Cosmetic fix.
+
+------------------------------------------------------------------------
+r81 | fabricecolin | 2008-02-22 22:11:12 +0800 (Fri, 22 Feb 2008) | 4 lines
+Changed paths:
+   M /trunk/xesam/XapianQueryBuilder.cc
+   M /trunk/xesam/XapianQueryBuilder.h
+   M /trunk/xesam/XesamParser.h
+   M /trunk/xesam/XesamQLParser.cc
+   M /trunk/xesam/XesamQLParser.h
+   M /trunk/xesam/XesamQueryBuilder.cc
+   M /trunk/xesam/XesamQueryBuilder.h
+   M /trunk/xesam/XesamULParser.cc
+   M /trunk/xesam/XesamULParser.h
+
+Made XesamQueryBuilder::on_user_query() pure virtual, moved XesamULParser-based
+implementation to XapianQueryBuilder.
+Log stuff with XESAM_LOG macros, which we expect apps to define in XesamLog.h.
+
+------------------------------------------------------------------------
+r80 | fabricecolin | 2008-02-18 19:28:29 +0800 (Mon, 18 Feb 2008) | 3 lines
+Changed paths:
+   M /trunk/filters/ExternalFilter.cc
+   M /trunk/filters/ExternalFilter.h
+   M /trunk/filters/external-filters.xml
+
+Each filter block can specify a charset element if the output of the program is
+in a known charset.
+
+------------------------------------------------------------------------
+r79 | fabricecolin | 2008-02-18 19:25:07 +0800 (Mon, 18 Feb 2008) | 6 lines
+Changed paths:
+   A /trunk/cjkv/CJKVTokenizer.cc (from /trunk/cjkv/cjkv-tokenizer.cc:77)
+   A /trunk/cjkv/CJKVTokenizer.h (from /trunk/cjkv/cjkv-tokenizer.hh:77)
+   D /trunk/cjkv/cjkv-tokenizer.cc
+   D /trunk/cjkv/cjkv-tokenizer.hh
+   M /trunk/cjkv/makefile
+   M /trunk/cjkv/test.cc
+
+Added wrapper functions around gunicode API, enabled when HAVE_UNICODE_H isn't
+defined. This variable should be defined only if libunicode 0.4 is available.
+Renamed the main class, made several mostly cosmetic changes to make it look
+like code from xesam/ and filters/ and added copyright and licensing headers.
+Thanks to Yung-Chung Lin for agreeing on licensing this under the LGPL.
+
+------------------------------------------------------------------------
+r77 | fabricecolin | 2008-01-14 22:35:44 +0800 (Mon, 14 Jan 2008) | 6 lines
+Changed paths:
+   M /trunk/xesam/XapianQueryBuilder.cc
+   M /trunk/xesam/XapianQueryBuilder.h
+   M /trunk/xesam/XesamQLParser.cc
+
+Implemented support for size (on field "file:size") and time ranges, Proximity
+with any number of values, negation, as well as for content (but not source)
+filtering, either with the Category selector or the Query element. The latter
+would require the proper classification of documents, and is therefore extremely
+basic.
+
+------------------------------------------------------------------------
+r76 | fabricecolin | 2008-01-14 22:22:42 +0800 (Mon, 14 Jan 2008) | 3 lines
+Changed paths:
+   M /trunk/xesam/XesamQueryBuilder.cc
+   M /trunk/xesam/XesamQueryBuilder.h
+   M /trunk/xesam/XesamULParser.cc
+
+Look only for HAVE_BOOST_SPIRIT to determine whether Spirit is available.
+Modified prototypes of on_query methods.
+
+------------------------------------------------------------------------
+r75 | fabricecolin | 2008-01-12 21:35:45 +0800 (Sat, 12 Jan 2008) | 2 lines
+Changed paths:
+   M /trunk/xesam/XesamQLParser.cc
+   M /trunk/xesam/XesamQueryBuilder.h
+
+The Type selector was apparently replaced with Category.
+
+------------------------------------------------------------------------
+r74 | fabricecolin | 2008-01-05 12:53:44 +0800 (Sat, 05 Jan 2008) | 2 lines
+Changed paths:
+   M /trunk/filters/GMimeMboxFilter.cc
+
+This can also process text/x-mail ant text/x-news.
+
+------------------------------------------------------------------------
+r73 | xern | 2007-12-24 11:36:38 +0800 (Mon, 24 Dec 2007) | 1 line
+Changed paths:
+   A /trunk/cjkv
+   A /trunk/cjkv/cjkv-tokenizer.cc
+   A /trunk/cjkv/cjkv-tokenizer.hh
+   A /trunk/cjkv/makefile
+   A /trunk/cjkv/test.cc
+
+The first commit of cjkv tokenizer.
+------------------------------------------------------------------------
+r72 | fabricecolin | 2007-11-29 21:21:44 +0800 (Thu, 29 Nov 2007) | 2 lines
+Changed paths:
+   A /trunk/filters/external-filters.xml
+
+This file is needed too.
+
+------------------------------------------------------------------------
+r71 | fabricecolin | 2007-11-29 20:52:11 +0800 (Thu, 29 Nov 2007) | 2 lines
+Changed paths:
+   M /trunk/xesam/XapianQueryBuilder.cc
+
+Assume the caller set the appropriate ValueRangeProcessor's on the QueryParser.
+
+------------------------------------------------------------------------
+r70 | fabricecolin | 2007-11-29 20:44:37 +0800 (Thu, 29 Nov 2007) | 3 lines
+Changed paths:
+   A /trunk/filters
+   A /trunk/filters/ExternalFilter.cc
+   A /trunk/filters/ExternalFilter.h
+   A /trunk/filters/Filter.cc
+   A /trunk/filters/Filter.h
+   A /trunk/filters/FilterFactory.cc
+   A /trunk/filters/FilterFactory.h
+   A /trunk/filters/GMimeMboxFilter.cc
+   A /trunk/filters/GMimeMboxFilter.h
+   A /trunk/filters/HtmlFilter.cc
+   A /trunk/filters/HtmlFilter.h
+   A /trunk/filters/TagLibMusicFilter.cc
+   A /trunk/filters/TagLibMusicFilter.h
+   A /trunk/filters/TextFilter.cc
+   A /trunk/filters/TextFilter.h
+   A /trunk/filters/XmlFilter.cc
+   A /trunk/filters/XmlFilter.h
+   A /trunk/xesam
+   A /trunk/xesam/XapianQueryBuilder.cc
+   A /trunk/xesam/XapianQueryBuilder.h
+   A /trunk/xesam/XesamParser.h
+   A /trunk/xesam/XesamQLParser.cc
+   A /trunk/xesam/XesamQLParser.h
+   A /trunk/xesam/XesamQueryBuilder.cc
+   A /trunk/xesam/XesamQueryBuilder.h
+   A /trunk/xesam/XesamULParser.cc
+   A /trunk/xesam/XesamULParser.h
+
+Current code imported from branches/pinot. All this no longer depends on Pinot's
+code so there's no reason to keep it in a branch.
+
+------------------------------------------------------------------------
+r1 | fabricecolin | 2007-01-27 11:53:54 +0800 (Sat, 27 Jan 2007) | 2 lines
+Changed paths:
+   A /trunk
+
+Trunk.
+
+------------------------------------------------------------------------
