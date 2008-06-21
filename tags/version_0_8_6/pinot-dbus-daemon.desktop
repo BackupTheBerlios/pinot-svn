@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Pinot
+Comment=Search your documents
+Exec=pinot-dbus-daemon
+Icon=pinot
+Terminal=false
+Type=Application
+Categories=
